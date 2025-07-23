@@ -1,0 +1,54 @@
+name: Deploy to Google Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Load environment variables
+        run: |
+          if [ ! -f .github/config/env.yml ]; then
+            echo "Error: env.yml file not found"
+            exit 1
+          fi
+          while IFS=":" read -r key value; do
+            if [[ ! $key =~ ^# ]] && [[ -n "$key" ]]; then
+              echo "${key}=$(echo $value | xargs)" >> $GITHUB_ENV
+            fi
+          done < .github/config/env.yml
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Configure Docker authentication
+        run: |
+          gcloud auth configure-docker europe-west2-docker.pkg.dev --quiet
+
+      - name: Build & push Docker image
+        run: |
+          docker build -t ${IMAGE}:latest .
+          docker push ${IMAGE}:latest
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ${SERVICE_NAME} \
+            --image ${IMAGE}:latest \
+            --platform managed \
+            --region ${REGION} \
+            --allow-unauthenticated \
+            --vpc-connector=cloud-run-vpc-connector \
+            --vpc-egress=all
