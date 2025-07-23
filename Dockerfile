@@ -21,4 +21,5 @@ ENV PORT=8080
 EXPOSE ${PORT}
 
 # Start the application using uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+# Use a shell script to start the application
+CMD ["python", "./main.py"]
