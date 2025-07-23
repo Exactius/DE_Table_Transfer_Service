@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from src.router.transfer_router import router as transfer_router
+import uvicorn
 
 app = FastAPI(
     title="BigQuery to GCS Transfer Service",
@@ -10,6 +11,4 @@ app = FastAPI(
 app.include_router(transfer_router)
 
 if __name__ == "__main__":
-    import uvicorn
-
     uvicorn.run(app, host="0.0.0.0", port=8000)
