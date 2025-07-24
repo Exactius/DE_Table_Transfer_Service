@@ -49,6 +49,4 @@ jobs:
             --image ${IMAGE}:latest \
             --platform managed \
             --region ${REGION} \
-            --allow-unauthenticated \
-            --vpc-connector=cloud-run-vpc-connector \
-            --vpc-egress=all
+            --allow-unauthenticated
