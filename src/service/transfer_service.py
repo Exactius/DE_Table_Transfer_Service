@@ -26,8 +26,10 @@ class TransferService:
 
                 df = hash_dataframe_columns(df, request.hashing.columns)
 
+            folder = request.gcs.folder or request.bigquery.project_id
+
             upload_result = self.gcs_client.upload_dataframe_as_csv(
-                df, request.gcs.bucket, request.gcs.filename
+                df, request.gcs.bucket, request.gcs.filename, folder
             )
 
             return TransferResponse(

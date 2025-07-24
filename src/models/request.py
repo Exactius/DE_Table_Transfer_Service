@@ -11,6 +11,7 @@ class BigQueryRequest(BaseModel):
 class GoogleCloudStorageRequest(BaseModel):
     project_id: str
     bucket: str
+    folder: Optional[str] = None
     filename: str
 
 
