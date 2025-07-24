@@ -1,7 +1,5 @@
-# Use the official Python image from the Docker Hub
 FROM python:3.12-slim
 
-# Set work directory
 WORKDIR /app
 
 # Copy requirements first for better caching
@@ -12,14 +10,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the entire application
 COPY . .
 
+# Cloud Run provides PORT environment variable
+EXPOSE 8080
 
-
-# Use the PORT environment variable provided by Cloud Run
-ENV PORT=8080
-
-# Expose the port
-EXPOSE ${PORT}
-
-# Start the application using uvicorn
-# Use a shell script to start the application
-CMD ["python", "./main.py"]
+# Start the application
+CMD ["python", "main.py"]
