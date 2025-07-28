@@ -12,7 +12,7 @@ class GoogleCloudStorageRequest(BaseModel):
     project_id: str
     bucket: str
     folder: Optional[str] = None
-    filename: str
+    filename: Optional[str] = None
 
 
 class Hashing(BaseModel):
